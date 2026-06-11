@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Furqon Assistant</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background: #f0f2f5; }
+        .chat-container { width: 400px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        #chat-box { height: 300px; overflow-y: scroll; border-bottom: 1px solid #ddd; margin-bottom: 10px; padding: 10px; }
+        .msg { margin: 10px 0; padding: 8px 12px; border-radius: 10px; max-width: 80%; }
+        .user { background: #0084ff; color: white; align-self: flex-end; margin-left: auto; }
+        .bot { background: #e4e6eb; color: black; }
+        input { width: 75%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px; cursor: pointer; background: #0084ff; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <h2>Furqon Assistant</h2>
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Tanya sesuatu...">
+    <button onclick="sendMessage()">Kirim</button>
+</div>
+
+<script>
+    function sendMessage() {
+        let input = document.getElementById('user-input');
+        let chatBox = document.getElementById('chat-box');
+        let msg = input.value;
+        if (!msg) return;
+
+        chatBox.innerHTML += `<p class="msg user">${msg}</p>`;
+        
+        let formData = new FormData();
+        formData.append('message', msg);
+
+        fetch('/chat', { method: 'POST', body: formData })
+        .then(response => response.json())
+        .then(data => {
+            chatBox.innerHTML += `<p class="msg bot">${data.reply}</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+        input.value = '';
+    }
+</script>
+
+</body>
+</html>
